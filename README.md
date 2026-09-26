@@ -59,7 +59,8 @@ keep it cost-efficient. Cost figures are approximate and for the eu-west-1
 | **Application Load Balancer** | Layer-7 features path/host routing, health checks that a Network Load Balancer does not provide. Cost is calculated hourly + Load Balancer Capacity Unit (LCU) pricing (~$20-25/month baseline); A single shared ALB fronts the whole application.
 
 | **EC2 + Auto Scaling (t3.micro)** | Burstable instances suitable for variable web workload; the group scales automatically using ASG. The Auto Scaling group launches instances from a Launch Template that defines the AMI, instance type, security group, and user-data bootstrap.
-As for the instance family, the T3 family is utilized since it can perform the job well and there is no need for extra-intensive compute. Applied scaling policies: Target-tracking scaling. When CPU utilization surpasses 60%, new instances are added. When dropping below 60%, instances are removed, to ensure performance and cost efficiency.
+As for the instance family, the T3 family is utilized since it can perform the job well and there is no need for extra-intensive compute. Auto Scaling uses a target-tracking policy set to 60% average CPU utilization. When average CPU rises above the target, the group adds instances to maintain
+performance; when it falls and stays below the target, the group removes instances to control cost. The target-tracking policy continuously adjusts capacity to keep utilization near 60%.
 
 | **CloudFront** | Serves cached content from edge locations, cutting latency. Caching reduces origin requests and associated data transfer; CloudFront egress is cheaper than serving all content from EC2/ALB.
 
